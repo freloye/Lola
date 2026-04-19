@@ -11,17 +11,17 @@
     Fichiers à mettre à la racine du dépôt :
     - index.html                ← ce fichier
     - chanson-lola.mp3          ← ta chanson
-    - tete-lola.jpg             ← la photo / pochette
+    - tete-lola.png            ← la photo / pochette
 
     Si tu changes les noms de fichiers,
     modifie simplement ici :
     const AUDIO_FILE = "chanson-lola.mp3";
-    const COVER_FILE = "tete-lola.jpg";
+    const COVER_FILE = "tete-lola.png";
   -->
 
   <meta property="og:title" content="LOLA – Tisseuse de liens" />
   <meta property="og:description" content="Une chanson pour Lola" />
-  <meta property="og:image" content="tete-lola.jpg" />
+  <meta property="og:image" content="tete-lola.png" />
   <meta property="og:type" content="music.song" />
 
   <style>
@@ -46,7 +46,7 @@
     .bg {
       position: fixed;
       inset: 0;
-      background-image: url("tete-lola.jpg");
+      background-image: url("tete-lola.png");
       background-size: cover;
       background-position: center;
       filter: blur(22px) brightness(0.45);
@@ -304,7 +304,7 @@
     // PARAMÈTRES FACILES À CHANGER
     // ===========================
     const AUDIO_FILE = "chanson-lola.mp3";
-    const COVER_FILE = "tete-lola.jpg";
+    const COVER_FILE = "tete-lola.png";
 
     // Vitesse de rotation du disque :
     // plus petit = plus rapide
