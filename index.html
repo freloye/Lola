@@ -5,43 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LOLA – Tisseuse de liens</title>
 
-  <!--
-    KIT GITHUB PAGES – LOLA
-    --------------------------------
-    Fichiers à mettre à la racine du dépôt :
-    - index.html                ← ce fichier
-    - chanson-lola.mp3          ← ta chanson
-    - tete-lola.png        ← la photo / pochette
-
-    Si tu changes les noms de fichiers,
-    modifie simplement ici :
-    const AUDIO_FILE = "chanson-lola.mp3";
-    const COVER_FILE = "tete-lola.png";
-  -->
-
   <meta property="og:title" content="LOLA – Tisseuse de liens" />
   <meta property="og:description" content="Une chanson pour Lola" />
   <meta property="og:image" content="tete-lola.png" />
-  <meta property="og:type" content="music.song" />
 
   <style>
     * { box-sizing: border-box; }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      background: #090909;
-      font-family: Arial, Helvetica, sans-serif;
-      color: white;
-      overflow: hidden;
-    }
-
     body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
     }
+
+    /* =========================
+       FOND STYLE "MIREILLE"
+       ========================= */
 
     .bg {
       position: fixed;
@@ -49,362 +34,180 @@
       background-image: url("tete-lola.png");
       background-size: cover;
       background-position: center;
-      filter: blur(22px) brightness(0.45);
-      transform: scale(1.12);
+      filter: blur(35px) brightness(0.35) saturate(1.2);
+      transform: scale(1.2);
     }
 
+    /* halo lumineux central */
+    .halo {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at center,
+          rgba(255, 200, 120, 0.25) 0%,
+          rgba(255, 200, 120, 0.15) 25%,
+          rgba(0,0,0,0.4) 60%,
+          rgba(0,0,0,0.85) 100%);
+      pointer-events: none;
+    }
+
+    /* vignette sombre pour profondeur */
     .vignette {
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.65) 100%);
+        radial-gradient(circle at center,
+          transparent 40%,
+          rgba(0,0,0,0.6) 100%);
       pointer-events: none;
     }
 
-    .page {
+    .container {
       position: relative;
       z-index: 2;
-      width: min(92vw, 760px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 22px;
       text-align: center;
-      padding: 24px;
     }
 
-    .title {
-      font-size: clamp(28px, 4vw, 48px);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-shadow: 0 3px 14px rgba(0,0,0,0.45);
+    h1 {
+      font-size: 42px;
+      margin: 0;
+      letter-spacing: 3px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
     }
 
     .subtitle {
-      font-size: clamp(14px, 2vw, 18px);
-      opacity: 0.88;
-      margin-top: -10px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+      margin-bottom: 30px;
+      opacity: 0.85;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.6);
     }
 
-    .disc-wrap {
-      position: relative;
-      width: min(72vw, 420px);
-      aspect-ratio: 1 / 1;
-      display: grid;
-      place-items: center;
-    }
-
-    .disc-shadow {
-      position: absolute;
-      inset: 7%;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,0,0,0.08), rgba(0,0,0,0.38));
-      filter: blur(18px);
-      transform: translateY(18px);
-    }
+    /* =========================
+       DISQUE
+       ========================= */
 
     .disc {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
+      width: 320px;
+      height: 320px;
       border-radius: 50%;
-      overflow: hidden;
-      animation: spin 14s linear infinite;
-      animation-play-state: paused;
-      box-shadow:
-        0 18px 40px rgba(0,0,0,0.42),
-        inset 0 0 0 2px rgba(255,255,255,0.10);
+      margin: auto;
       background:
-        radial-gradient(circle at center, rgba(255,255,255,0.18) 0 8%, transparent 8.5%),
-        repeating-radial-gradient(circle at center,
-          rgba(255,255,255,0.10) 0 1px,
-          rgba(255,255,255,0.02) 1px 4px,
-          rgba(0,0,0,0.10) 4px 6px),
+        radial-gradient(circle at center, rgba(255,255,255,0.2) 0 10%, transparent 11%),
+        repeating-radial-gradient(circle, rgba(255,255,255,0.08) 0 2px, rgba(0,0,0,0.2) 2px 4px),
         url("tete-lola.png") center/cover no-repeat;
-    }
-
-    .disc.playing {
-      animation-play-state: running;
-    }
-
-    .disc::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 50% 50%,
-          transparent 0 16%,
-          rgba(0,0,0,0.06) 16.5%,
-          transparent 17% 100%);
-      pointer-events: none;
-    }
-
-    .label {
-      position: absolute;
-      width: 28%;
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 35% 30%, rgba(255,255,255,0.45), rgba(255,255,255,0.08) 28%, rgba(0,0,0,0.18) 80%),
-        linear-gradient(145deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
-      display: grid;
-      place-items: center;
       box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.18),
-        0 4px 12px rgba(0,0,0,0.25);
-      backdrop-filter: blur(2px);
-      text-align: center;
-      padding: 8px;
+        0 20px 50px rgba(0,0,0,0.7),
+        inset 0 0 0 2px rgba(255,255,255,0.1);
+      animation: spin 12s linear infinite;
+      animation-play-state: paused;
     }
 
-    .label-text {
-      font-size: clamp(10px, 1.6vw, 13px);
-      line-height: 1.2;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: white;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.45);
-    }
-
-    .hole {
-      position: absolute;
-      width: 4.7%;
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      background: #111;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10);
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      width: min(92vw, 560px);
-    }
-
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 12px 18px;
-      font-size: 15px;
-      cursor: pointer;
-      background: rgba(255,255,255,0.14);
-      color: white;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.22);
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.22);
-    }
-
-    .progress-wrap {
-      width: min(92vw, 560px);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .time-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      opacity: 0.9;
-      padding: 0 4px;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: white;
-      cursor: pointer;
-    }
-
-    .autostart {
-      font-size: 13px;
-      opacity: 0.8;
-      max-width: 520px;
-      line-height: 1.4;
-    }
-
-    .lyrics {
-      max-width: 700px;
-      font-size: 13px;
-      line-height: 1.5;
-      opacity: 0.85;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    .playing {
+      animation-play-state: running;
     }
 
     @keyframes spin {
       from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
-    @media (max-width: 640px) {
-      .page { gap: 18px; }
-      .controls { gap: 10px; }
-      button { padding: 11px 15px; font-size: 14px; }
+    /* =========================
+       CONTROLES
+       ========================= */
+
+    button {
+      margin: 10px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.12);
+      color: white;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
     }
+
+    input[type="range"] {
+      width: 320px;
+    }
+
+    .time {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
   </style>
 </head>
+
 <body>
-  <div class="bg"></div>
-  <div class="vignette"></div>
 
-  <div class="page">
-    <div class="title">LOLA</div>
-    <div class="subtitle">Tisseuse de liens</div>
+<div class="bg"></div>
+<div class="halo"></div>
+<div class="vignette"></div>
 
-    <div class="disc-wrap">
-      <div class="disc-shadow"></div>
-      <div class="disc" id="disc">
-        <div class="label">
-          <div class="label-text">Lola<br>Tisseuse<br>de liens</div>
-        </div>
-        <div class="hole"></div>
-      </div>
-    </div>
+<div class="container">
+  <h1>LOLA</h1>
+  <div class="subtitle">Tisseuse de liens</div>
 
-    <div class="controls">
-      <button id="playBtn">Lecture</button>
-      <button id="pauseBtn">Pause</button>
-      <button id="restartBtn">Reprendre au début</button>
-    </div>
+  <div id="disc" class="disc"></div>
 
-    <div class="progress-wrap">
-      <div class="time-row">
-        <span id="currentTime">0:00</span>
-        <span id="duration">0:00</span>
-      </div>
-      <input id="seekBar" type="range" min="0" max="100" value="0" step="0.1" />
-    </div>
-
-    <div class="autostart">
-      Sur certains téléphones, l’autoplay audio peut être bloqué par le navigateur.
-      Dans ce cas, touche simplement <strong>Lecture</strong>.
-    </div>
-
-    <div class="lyrics">
-      « Tu tisses des liens, tu traces des chemins… »
-    </div>
+  <div>
+    <button onclick="playAudio()">Lecture</button>
+    <button onclick="pauseAudio()">Pause</button>
+    <button onclick="restartAudio()">Reprendre au début</button>
   </div>
 
-  <audio id="audio" preload="metadata">
-    <source src="chanson-lola.mp3" type="audio/mpeg" />
-    Votre navigateur ne supporte pas l'audio HTML5.
-  </audio>
+  <div class="time">
+    <span id="current">0:00</span>
+    <input id="progress" type="range" value="0">
+    <span id="duration">0:00</span>
+  </div>
 
-  <script>
-    // ===========================
-    // PARAMÈTRES FACILES À CHANGER
-    // ===========================
-    const AUDIO_FILE = "chanson-lola.mp3";
-    const COVER_FILE = "tete-lola.jpg";
+</div>
 
-    // Vitesse de rotation du disque :
-    // plus petit = plus rapide
-    const DISC_ROTATION_SECONDS = 14;
+<audio id="audio">
+  <source src="chanson-lola.mp3" type="audio/mpeg">
+</audio>
 
-    const audio = document.getElementById("audio");
-    const disc = document.getElementById("disc");
-    const playBtn = document.getElementById("playBtn");
-    const pauseBtn = document.getElementById("pauseBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const seekBar = document.getElementById("seekBar");
-    const currentTimeEl = document.getElementById("currentTime");
-    const durationEl = document.getElementById("duration");
+<script>
+  const audio = document.getElementById("audio");
+  const disc = document.getElementById("disc");
+  const progress = document.getElementById("progress");
+  const current = document.getElementById("current");
+  const duration = document.getElementById("duration");
 
-    // Réinjecte les noms de fichiers dans la page si besoin
-    audio.querySelector("source").src = AUDIO_FILE;
-    audio.load();
+  function playAudio(){
+    audio.play();
+    disc.classList.add("playing");
+  }
 
-    document.querySelector(".bg").style.backgroundImage = `url("${COVER_FILE}")`;
-    disc.style.background = `
-      radial-gradient(circle at center, rgba(255,255,255,0.18) 0 8%, transparent 8.5%),
-      repeating-radial-gradient(circle at center,
-        rgba(255,255,255,0.10) 0 1px,
-        rgba(255,255,255,0.02) 1px 4px,
-        rgba(0,0,0,0.10) 4px 6px),
-      url("${COVER_FILE}") center/cover no-repeat
-    `;
-    disc.style.animationDuration = `${DISC_ROTATION_SECONDS}s`;
+  function pauseAudio(){
+    audio.pause();
+    disc.classList.remove("playing");
+  }
 
-    function formatTime(sec) {
-      if (!isFinite(sec)) return "0:00";
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60);
-      return `${m}:${String(s).padStart(2, "0")}`;
-    }
+  function restartAudio(){
+    audio.currentTime = 0;
+    playAudio();
+  }
 
-    function updateProgress() {
-      if (!audio.duration) return;
-      const percent = (audio.currentTime / audio.duration) * 100;
-      seekBar.value = percent;
-      currentTimeEl.textContent = formatTime(audio.currentTime);
-      durationEl.textContent = formatTime(audio.duration);
-    }
+  function format(t){
+    let m = Math.floor(t/60);
+    let s = Math.floor(t%60);
+    return m + ":" + (s<10?"0":"") + s;
+  }
 
-    function setPlayingState(isPlaying) {
-      if (isPlaying) {
-        disc.classList.add("playing");
-      } else {
-        disc.classList.remove("playing");
-      }
-    }
+  audio.addEventListener("timeupdate", ()=>{
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    current.textContent = format(audio.currentTime);
+  });
 
-    playBtn.addEventListener("click", async () => {
-      try {
-        await audio.play();
-        setPlayingState(true);
-      } catch (e) {
-        console.log("Lecture bloquée par le navigateur :", e);
-      }
-    });
+  audio.addEventListener("loadedmetadata", ()=>{
+    duration.textContent = format(audio.duration);
+  });
 
-    pauseBtn.addEventListener("click", () => {
-      audio.pause();
-      setPlayingState(false);
-    });
+  progress.addEventListener("input", ()=>{
+    audio.currentTime = (progress.value / 100) * audio.duration;
+  });
+</script>
 
-    restartBtn.addEventListener("click", async () => {
-      audio.currentTime = 0;
-      try {
-        await audio.play();
-        setPlayingState(true);
-      } catch (e) {
-        console.log("Lecture bloquée par le navigateur :", e);
-      }
-    });
-
-    audio.addEventListener("play", () => setPlayingState(true));
-    audio.addEventListener("pause", () => setPlayingState(false));
-    audio.addEventListener("ended", () => setPlayingState(false));
-
-    audio.addEventListener("loadedmetadata", () => {
-      durationEl.textContent = formatTime(audio.duration);
-    });
-
-    audio.addEventListener("timeupdate", updateProgress);
-
-    seekBar.addEventListener("input", () => {
-      if (!audio.duration) return;
-      audio.currentTime = (seekBar.value / 100) * audio.duration;
-    });
-
-    // Tentative d'autoplay douce
-    window.addEventListener("load", async () => {
-      try {
-        await audio.play();
-        setPlayingState(true);
-      } catch (e) {
-        // normal sur mobile : interaction requise
-      }
-    });
-  </script>
 </body>
 </html>
